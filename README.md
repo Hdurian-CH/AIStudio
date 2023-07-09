@@ -10,7 +10,7 @@ git clone Blazor App. Cd to appsetting.json and input your api key and option_id
 * you can check your billing by api key
 * authentication provider(Initial password)
 
-### 6/9/2023 update
+### 7/9/2023 update
 
 * add NewBing from [bingchat](https://github.com/bsdayo/BingChat)
 
@@ -39,7 +39,7 @@ Image:
 
 ## Thanks
 
-* [bingchat](https://github.com/bsdayo/BingChat)
+* [BingChat](https://github.com/bsdayo/BingChat)
 * [Cledev.OpenAI.Studio](https://github.com/lucabriguglia/Cledev.OpenAI.Studio)
 
 * [MicrosoftBlazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
