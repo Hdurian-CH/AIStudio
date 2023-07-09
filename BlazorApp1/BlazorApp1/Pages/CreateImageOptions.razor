@@ -1,0 +1,54 @@
+﻿@using Cledev.OpenAI.V1.Contracts.Images
+
+@if (Request is not null)
+{
+    <div class="row mb-3">
+        <FormLabel InputId="Size" InColumn="InColumn" Tooltip="@Tooltips.Size">Size</FormLabel>
+        <div class="col-sm">
+            <InputSelect id="Size" @bind-Value="Request.Size" class="form-select">
+                @foreach (var item in Sizes)
+                {
+                    <option value="@item">@item</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <FormLabel InputId="N" InColumn="InColumn" Tooltip="@Tooltips.N">N</FormLabel>
+        <div class="col-sm">
+            <InputNumber id="N" @bind-Value="Request.N" class="form-control" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <FormLabel InputId="ResponseFormat" InColumn="InColumn" Tooltip="@Tooltips.ResponseFormat">Response Format</FormLabel>
+        <div class="col-sm">
+            <InputSelect id="ResponseFormat" @bind-Value="Request.ResponseFormat" class="form-select">
+                @foreach (var item in Formats)
+                {
+                    <option value="@item">@item</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+    <div class="row">
+        <FormLabel InputId="User" InColumn="InColumn" Tooltip="@Tooltips.User">User</FormLabel>
+        <div class="col-sm">
+            <InputText id="User" @bind-Value="Request.User" class="form-control" r />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public CreateImageRequestBase? Request { get; set; }
+    [Parameter] public IList<string> Sizes { get; set; } = new List<string>();
+    [Parameter] public IList<string> Formats { get; set; } = new List<string>();
+    [Parameter] public bool InColumn { get; set; }
+
+    protected static class Tooltips
+    {
+        public static string N = "Optional (Defaults to 1). The number of images to generate. Must be between 1 and 10.";
+        public static string Size = "Optional (Defaults to 1024x1024). The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024.";
+        public static string ResponseFormat = "Optional (Defaults to url). The format in which the generated images are returned. Must be one of url or b64_json.";
+        public static string User = "Optional. A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.";
+    }
+}

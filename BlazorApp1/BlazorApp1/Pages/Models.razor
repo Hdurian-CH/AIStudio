@@ -1,0 +1,114 @@
+﻿@page "/models"
+
+@inherits BlazorApp1.ModelsPage
+@attribute [Authorize(Roles = "User")]
+
+<PageTitle>Models</PageTitle>
+
+<PageHeader Icon="fa-solid fa-database">Models</PageHeader>
+
+<p class="mb-4">List and describe the various models available in the API. You can refer to the <a href="https://platform.openai.com/docs/models" title="Models" target="_blank">Models</a> documentation to understand what models are available and the differences between them.</p>
+
+<div class="mb-3">
+    <FormLabel InputId="ModelId" Tooltip="@Tooltips.ModelId" ExtraInfo="Optional">Model Id</FormLabel>
+    <input type="text" id="ModelId" @oninput="OnValueChanged" class="form-control" />
+</div>
+
+@if (IsProcessing)
+{
+    <button class="btn btn-primary text-nowrap" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        &nbsp;
+        @if (string.IsNullOrEmpty(ModelId))
+        {
+            <literal>Getting Models...</literal>
+        }
+        else
+        {
+            <literal>Retrieving Model...</literal>
+        }
+    </button>
+}
+else
+{
+    <button id="ListModels" type="submit" class="btn btn-primary" @onclick="OnSubmitAsync">
+        @if (string.IsNullOrEmpty(ModelId))
+        {
+            <literal>List Models</literal>
+        }
+        else
+        {
+            <literal>Retrieve Model</literal>
+        }
+    </button>
+}
+
+@if (Error is null && SearchCompleted)
+{
+    <div class="row mt-4">
+        <div class="col-6">
+            <h4>Response</h4>
+
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">&nbsp;</th>
+                    <th scope="col">Id</th>
+                    <th scope="col">OwnedBy</th>
+                    <th scope="col">&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var index = 0; index < Models.Count; index++)
+                {
+                    var model = Models[index];
+                    <tr>
+                        <th scope="row" class="text-end">@(index + 1)</th>
+                        <td id="model-@model.Id">@model.Id</td>
+                        <td>@model.OwnedBy</td>
+                        <td>
+                            @if (model.OwnedBy == StudioSettings.Value.OrganizationName)
+                            {
+                                <a id="OpenDeleteFineTunedModelModal" title="Delete Fine-Tuned Model" href="#" @onclick:preventDefault="true" @onclick="() => SetFineTunedModelToDelete(model.Id)" data-bs-toggle="modal" data-bs-target="#DeleteFineTunedModelModal">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<Error Model="Error"></Error>
+
+<div class="modal fade" id="DeleteFineTunedModelModal" tabindex="-1" aria-labelledby="DeleteFineTunedModelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteFineTunedModelModalLabel">Delete Fine-Tune</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete <span class="fw-bold">@FineTunedModelToDelete</span>?
+                <Error Model="DeleteError"></Error>
+            </div>
+            <div class="modal-footer">
+                @if (IsDeleting)
+                {
+                    <button class="btn btn-danger text-nowrap" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Deleting Fine-Tune Model...
+                    </button>
+                }
+                else
+                {
+                    <button id="DeleteFineTunedModel" type="submit" class="btn btn-danger" @onclick="async () => await DeleteFineTunedModel()">Delete</button>
+                }
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

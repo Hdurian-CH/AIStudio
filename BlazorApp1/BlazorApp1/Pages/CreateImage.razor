@@ -1,0 +1,59 @@
+﻿@page "/create-image"
+
+@inherits BlazorApp1.CreateImagePage
+@attribute [Authorize(Roles = "User")]
+
+<PageTitle>Create Image</PageTitle>
+
+<PageHeader Icon="fa-regular fa-images">Images</PageHeader>
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Create Image</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/create-image-edit">Create Image Edit</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/create-image-variation">Create Image Variation</a>
+    </li>
+</ul>
+
+<p class="mb-4">Creates an image given a prompt.</p>
+
+<EditForm Model="Request" OnValidSubmit="OnSubmitAsync">
+    <div class="row">
+        <div class="col-md-3 border-end pe-4 d-none d-md-block">
+            <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="false"></CreateImageOptions>
+        </div>
+        <div class="col-md-9 col-sm-12 ps-md-4">
+            <div class="mb-3">
+                <FormLabel InputId="Prompt" Tooltip="@Tooltips.Prompt">Prompt</FormLabel>
+                <InputText id="Prompt" @bind-Value="Request.Prompt" class="form-control"/>
+            </div>
+
+            <div class="row">
+                <div class="col-auto">
+                    <SubmitButton Text="Create Image"
+                                  ProcessingText="Creating Image..."
+                                  IsProcessing="IsProcessing">
+                    </SubmitButton>
+                </div>
+                <div class="col-auto p-0 d-block d-sm-block d-md-none">
+                    <OptionsButton IsProcessing="IsProcessing"></OptionsButton>
+                </div>
+            </div>
+    
+            @if (Response is not null && Error is null)
+            {
+                <CreateImageData Images="Images"></CreateImageData>
+            }
+        
+            <Error Model="Error"></Error>
+        </div>
+    </div>
+
+    <OptionsModal>
+        <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="true"></CreateImageOptions>
+    </OptionsModal>
+</EditForm>

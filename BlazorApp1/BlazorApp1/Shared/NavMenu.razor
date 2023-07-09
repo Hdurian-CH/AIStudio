@@ -1,0 +1,80 @@
+﻿@inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthStateProvider
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="https://github.com/Hdurian-CH/AIStudio">
+            <i class="fab fa-github fa-2x mx-3 ps-1"></i>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/chat">Chat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/bingchat">NewBing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/create-image">Image</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/models">Models</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav d-flex flex-row ms-auto me-3">
+                @if (isAuth == true)
+                {
+                    <li class="nav-item me-3 me-lg-0">
+                        <a class="nav-link" href="#" id="navbarDropdown1" role="button" data-mdb-toggle="dropdown"
+                           aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                            </svg>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item me-3 me-lg-0">
+                        <a class="nav-link" @onclick="LogoutTask" id="navbarDropdown1" role="button" data-mdb-toggle="dropdown"
+                           aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-x" viewBox="0 0 16 16">
+                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z"/>
+                                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708Z"/>
+                            </svg>
+                        </a>
+
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- Navbar -->
+@code
+{
+    private bool? isAuth = false;
+    protected override async Task OnInitializedAsync()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+        isAuth = authState.User.Identity?.IsAuthenticated;
+    }
+
+    private async Task LogoutTask()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        Nav.NavigateTo("/");
+    }
+}

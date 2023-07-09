@@ -1,0 +1,105 @@
+﻿@page "/chat"
+
+@inherits BlazorApp1.ChatPage
+@attribute [Authorize(Roles = "User")]
+
+<PageTitle>Chat</PageTitle>
+
+<a id="top"></a>
+
+<PageHeader Icon="fa-regular fa-comments">Chat</PageHeader>
+
+<p class="mb-4">Given a chat conversation, the model will return a chat completion response.</p>
+
+<EditForm Model="Request" OnValidSubmit="OnSubmitAsync">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#chatModal" @onclick="GetMessage">Open Chat</button>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasOptions" aria-labelledby="offcanvasOptionsLabel" style="z-index: 10000;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasOptionsLabel">Options</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ChatOptions Request="Request" ChatModels="ChatModels" InColumn="false"></ChatOptions>
+        </div>
+    </div>
+
+    <div class="modal" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header text-bg-light">
+                    <h5 class="modal-title" id="chatModalLabel">Chat</h5>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="margin-left: 5px;" width="16" height="16" fill="currentColor" class="bi bi-chat-left-fill" viewBox="0 0 16 16">
+                        <path d="M2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                    </svg>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-header" style="background-color: #f7f7f7;">
+                    <div class="row m-auto">
+                        <div class="col-12">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOptions" aria-controls="offcanvasOptions"><i class="fa-solid fa-gear"></i> Options</button>
+                            <button class="btn btn-outline-secondary btn-sm ms-2" type="button" @onclick="DeleteAllMessage"><i class="fa-solid fa-comment-slash"></i> DeleteHistory</button>
+                            <button class="btn btn-outline-secondary btn-sm ms-2" type="button" @onclick="GetLimit">Quota usage</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    @if (Messages.Any())
+                    {
+                        <div class="mb-4">
+                            @foreach (var message in Messages)
+                            {
+                                if (message.Role is "User")
+                                {
+                                    <div class="d-flex flex-row justify-content-end mb-3">
+                                        <button type="button" class="btn btn-link" @onclick="()=> DeleteUserMessage(message.Content)">delete</button>
+                                        <div class="col-8 p-3 me-3 border rounded">
+                                            @message.Content
+                                        </div>
+                                        <span class="fw-bold mt-3">User</span>
+                                    </div>
+                                }
+                                else 
+                                {
+                                    <div class="d-flex flex-row justify-content-start mb-3">
+                                        <span class="fw-bold mt-3">@message.Role</span>
+                                        <div class="col-8 p-3 ms-3 border rounded" style="background-color: #f7f7f7;">
+                                            @if (string.IsNullOrEmpty(message.Content))
+                                            {
+                                                <i class="fa-regular fa-comment-dots"></i>
+                                            }
+                                            else
+                                            {
+                                                @((MarkupString)message.Content)
+                                            }
+                                        </div>
+                                        <button type="button" class="btn btn-link" @onclick="()=> DeleteGptMessage(message.Content)">delete</button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                    <a id="bottom"></a>
+                    <Error Model="Error"></Error>
+                </div>
+                <div class="modal-footer">
+                    <div class="input-group">
+                        <InputText id="Prompt" placeholder="Message" @bind-Value="Prompt" class="form-control"/>
+                        @if (IsProcessing)
+                        {
+                            <button type="submit" class="btn btn-primary text-nowrap" disabled>
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary text-nowrap">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>

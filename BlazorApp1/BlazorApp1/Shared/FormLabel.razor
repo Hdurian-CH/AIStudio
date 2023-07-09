@@ -1,0 +1,30 @@
+﻿@inherits ComponentBase
+
+<label for="@InputId" class="@CssClass">
+    <i class="fa-regular fa-circle-question" href="#" data-bs-toggle="tooltip" data-bs-placement="right" title="@Tooltip"></i>
+    @ChildContent
+</label>
+
+@if (ExtraInfo is not null)
+{
+    <span class="fst-italic m-lg-1">(@ExtraInfo)</span>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? InputId { get; set; }
+
+    [Parameter]
+    public bool InColumn { get; set; }
+
+    [Parameter]
+    public string? Tooltip { get; set; }
+
+    [Parameter]
+    public string? ExtraInfo { get; set; }
+
+    private string CssClass => InColumn ? "col-sm col-form-label mb-1" : "form-label mb-1";
+}

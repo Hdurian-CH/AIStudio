@@ -1,0 +1,22 @@
+﻿
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Nav
+
+<PageTitle>ChatGPT</PageTitle>
+
+<header>
+    <NavMenu></NavMenu>
+</header>
+
+
+<main role="main" class="pb-4 pt-4">
+    <div class="container" style="min-height: 400px;">
+        @Body
+    </div>
+</main>
+
+@code
+{
+    
+}

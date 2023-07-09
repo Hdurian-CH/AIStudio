@@ -1,0 +1,25 @@
+﻿@inject NavigationManager Nav
+
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Need Auth</h5>
+            </div>
+            <div class="modal-body">
+                <p>Go to /login to Auth</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="GoTOLogin">Press this to login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private void GoTOLogin()
+    {
+        Nav.NavigateTo("/login");
+    }
+}

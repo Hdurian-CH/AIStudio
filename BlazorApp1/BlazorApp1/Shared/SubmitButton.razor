@@ -1,0 +1,22 @@
+﻿@if (IsProcessing)
+{
+    <button class="btn btn-primary text-nowrap" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        @ProcessingText
+    </button>
+}
+else
+{
+    <button type="submit" class="btn btn-primary text-nowrap">@Text</button>
+}
+
+@code {
+    [Parameter] 
+    public bool IsProcessing { get; set; }
+
+    [Parameter] 
+    public string? Text { get; set; }
+
+    [Parameter] 
+    public string? ProcessingText { get; set; }
+}
