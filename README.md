@@ -12,7 +12,7 @@ git clone Blazor App. Cd to appsetting.json and input your api key and option_id
 
 ### 7/9/2023 update
 
-* add NewBing from [bingchat](https://github.com/bsdayo/BingChat)
+* add NewBing from [BingChat](https://github.com/bsdayo/BingChat)
 
 Login：
 ![Login](/Images/Login.png)
