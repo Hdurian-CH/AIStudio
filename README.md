@@ -17,10 +17,10 @@ git clone Blazor App. Cd to appsetting.json and input your api key and option_id
 Login：
 ![Login](/Images/Login.png)
 index:
-![index](/Images/index.png)
+![index](/Images/Index.png)
 
 Chat:
-![chat](/Images/chat.png)
+![chat](/Images/Chat.png)
 
 
 
