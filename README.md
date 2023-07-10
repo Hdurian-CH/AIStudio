@@ -21,6 +21,7 @@ git clone Blazor App. Cd to appsetting.json and input your api key and option_id
 * remove model list
 * fix some button icon
 * fix openai billing usage showing
+* remove default authenorization(you can use attribute, I just not use for default)
 
 Login：
 ![Login](/Images/Login.png)
