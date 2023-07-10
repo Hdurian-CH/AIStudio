@@ -14,6 +14,14 @@ git clone Blazor App. Cd to appsetting.json and input your api key and option_id
 
 * add NewBing from [BingChat](https://github.com/bsdayo/BingChat)
 
+### 7/10/2023 update
+
+* add openai key option
+* add openai key localstorage
+* remove model list
+* fix some button icon
+* fix openai billing usage showing
+
 Login：
 ![Login](/Images/Login.png)
 index:
