@@ -1,4 +1,6 @@
-﻿using Cledev.OpenAI.V1.Contracts.Images;
+﻿using Cledev.OpenAI;
+using Cledev.OpenAI.V1;
+using Cledev.OpenAI.V1.Contracts.Images;
 using Cledev.OpenAI.V1.Helpers;
 
 namespace BlazorApp1;
@@ -6,11 +8,12 @@ namespace BlazorApp1;
 public class CreateImagePage : ImagePageBase
 {
     protected CreateImageRequest Request { get; set; } = null!;
+    protected Settings Settings { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
+        Settings = new Settings();
         Request = new CreateImageRequest
         {
             Prompt = string.Empty,
@@ -22,6 +25,10 @@ public class CreateImagePage : ImagePageBase
 
     protected async Task OnSubmitAsync()
     {
+        if (Settings.ApiKey != null)
+        {
+            OpenAIClient = new OpenAIClient(Settings);
+        }
         IsProcessing = true;
 
         Response = null;

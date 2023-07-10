@@ -26,13 +26,23 @@ public class ChatPage : PageComponentBase
     protected string NowUse { get; set; } = string.Empty;
 
     protected string MaxUse { get; set; } = string.Empty;
+
+    protected Settings Settings { get; set; }
     
     protected override void OnInitialized()
     {
-
+        Settings = new Settings();
+        ChatModels = new List<string>()
+        {
+            "gpt-3.5-turbo-0613",
+            "gpt-3.5-turbo-16k-0613",
+            "gpt-3.5-turbo",
+            "gpt-3.5-turbo-0301",
+            "gpt-3.5-turbo-16k"
+        };
         Request = new CreateChatCompletionRequest
         {
-            Model = ChatModel.Gpt_35_Turbo.ToStringModel(),
+            Model = ChatModels[0],
             N = 1,
             MaxTokens = 500,
             Stream = true,
@@ -40,19 +50,17 @@ public class ChatPage : PageComponentBase
         };
 
         /*ChatModels = Enum.GetValues(typeof(ChatModel)).Cast<ChatModel>().Select(x => x.ToStringModel()).ToList();*/
-        ChatModels = new List<string>()
-        {
-            "gpt-3.5-turbo",
-            "gpt-3.5-turbo-0301",
-            "gpt-3.5-turbo-0613",
-            "gpt-3.5-turbo-16k-0613",
-            "gpt-3.5-turbo-16k"
-        };
+        
     }
 
 
     protected async Task OnSubmitAsync()
     {
+        if (Settings.ApiKey != string.Empty)
+        {
+            OpenAIClient = new OpenAIClient(Settings);
+        }
+
         IsProcessing = true;
         Request.Messages.Add(new ChatCompletionMessage("user", Prompt ?? string.Empty));
 
@@ -113,6 +121,18 @@ public class ChatPage : PageComponentBase
         Prompt = null;
         Messages?.Clear();
         JsRuntime.InvokeVoidAsync("scrollToTarget", "top");
+    }
+
+    protected async Task SaveKey(string key)
+    {
+        if (key != string.Empty)
+        {
+            await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(key));
+            JsRuntime.InvokeVoidAsync("alert", "Save successful");
+        }
+            
+        else
+            JsRuntime.InvokeVoidAsync("alert", "Key is null");
     }
 
     private async Task SaveMessage()
@@ -186,7 +206,15 @@ public class ChatPage : PageComponentBase
 
     public async Task GetLimit()
     {
-        var apikey = Configuration.GetSection("OpenAI:ApiKey").Value;
+        var apikey = string.Empty;
+        if (Settings.ApiKey != null)
+        {
+            apikey = Settings.ApiKey;
+        }
+        else
+        {
+            apikey = Configuration.GetSection("OpenAI:ApiKey").Value;
+        }
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Add("Authorization", "Bearer " + apikey);
         client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
@@ -215,6 +243,16 @@ public class ChatPage : PageComponentBase
             var responseBody = await response1.Content.ReadAsStringAsync();
             dynamic jsonResponse = JsonConvert.DeserializeObject(responseBody);
             NowUse = jsonResponse.total_usage;
+            var dotIndex = NowUse.IndexOf('.');
+            if (dotIndex >= 0 && dotIndex <= NowUse.Length)
+            {
+                var numberString = NowUse[..dotIndex];
+                //to double
+                var number = double.Parse(numberString) / 100;
+                // to string
+                var result = number.ToString();
+                NowUse = result;
+            }
         }
         else
         {
@@ -222,7 +260,7 @@ public class ChatPage : PageComponentBase
             await Task.CompletedTask;
         }
 
-        await JsRuntime.InvokeVoidAsync("alert", $"Max:{MaxUse},NowUsed:{NowUse}");
+        await JsRuntime.InvokeVoidAsync("alert", $"Max: {MaxUse} , NowUsed: {NowUse}");
     }
 
 

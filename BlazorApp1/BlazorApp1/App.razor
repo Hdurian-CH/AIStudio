@@ -1,13 +1,14 @@
-﻿@using BlazorApp1.Pages.Authentication
-<CascadingAuthenticationState>
+﻿<CascadingAuthenticationState>
     <Microsoft.AspNetCore.Components.Routing.Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <Authorizing>
-                    ......
+                    Authorizing......
                 </Authorizing>
                 <NotAuthorized>
-                    <Login/>
+                    <div class="alert alert-danger" role="alert">
+                        click <a href="/login" class="alert-link">login</a> to get auth
+                    </div>
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

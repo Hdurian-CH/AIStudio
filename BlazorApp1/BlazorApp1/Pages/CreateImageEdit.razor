@@ -1,7 +1,7 @@
 ﻿@page "/create-image-edit"
 
 @inherits BlazorApp1.CreateImageEditPage
-@attribute [Authorize(Roles = "User")]
+@*@attribute [Authorize(Roles = "User")]*@
 
 <PageTitle>Create Image Edit</PageTitle>
 
@@ -63,6 +63,6 @@
     </div>
 
     <OptionsModal>
-        <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="true"></CreateImageOptions>
+        <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="true" Set="Settings"></CreateImageOptions>
     </OptionsModal>
 </EditForm>

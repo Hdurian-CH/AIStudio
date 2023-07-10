@@ -1,7 +1,7 @@
 ﻿@page "/chat"
 
 @inherits BlazorApp1.ChatPage
-@attribute [Authorize(Roles = "User")]
+@*@attribute [Authorize(Roles = "User")]*@
 
 <PageTitle>Chat</PageTitle>
 
@@ -20,7 +20,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <ChatOptions Request="Request" ChatModels="ChatModels" InColumn="false"></ChatOptions>
+            <ChatOptions Request="Request" ChatModels="ChatModels" InColumn="false" Set="Settings"></ChatOptions>
         </div>
     </div>
 
@@ -39,7 +39,8 @@
                         <div class="col-12">
                             <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOptions" aria-controls="offcanvasOptions"><i class="fa-solid fa-gear"></i> Options</button>
                             <button class="btn btn-outline-secondary btn-sm ms-2" type="button" @onclick="DeleteAllMessage"><i class="fa-solid fa-comment-slash"></i> DeleteHistory</button>
-                            <button class="btn btn-outline-secondary btn-sm ms-2" type="button" @onclick="GetLimit">Quota usage</button>
+                            <button class="btn btn-outline-secondary btn-sm ms-2" type="button" @onclick="GetLimit"><i class="fa-solid fa-wallet"></i> Quota usage</button>
+                            <button class="btn btn-outline-secondary btn-sm ms-2" type="button" @onclick="async ()=>await SaveKey(Settings.ApiKey)"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
                         </div>
                     </div>
                 </div>

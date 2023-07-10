@@ -1,7 +1,17 @@
 ﻿@using Cledev.OpenAI.V1.Contracts.Images
+@using Cledev.OpenAI
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
 
 @if (Request is not null)
 {
+    <div class="row mb-3">
+        <FormLabel InputId="ApiKey" InColumn="InColumn">ApiKey</FormLabel>
+        <div class="col-sm">
+            <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control" />
+        </div>
+    </div>
+
     <div class="row mb-3">
         <FormLabel InputId="Size" InColumn="InColumn" Tooltip="@Tooltips.Size">Size</FormLabel>
         <div class="col-sm">
@@ -13,12 +23,14 @@
             </InputSelect>
         </div>
     </div>
+
     <div class="row mb-3">
         <FormLabel InputId="N" InColumn="InColumn" Tooltip="@Tooltips.N">N</FormLabel>
         <div class="col-sm">
             <InputNumber id="N" @bind-Value="Request.N" class="form-control" />
         </div>
     </div>
+
     <div class="row mb-3">
         <FormLabel InputId="ResponseFormat" InColumn="InColumn" Tooltip="@Tooltips.ResponseFormat">Response Format</FormLabel>
         <div class="col-sm">
@@ -44,6 +56,9 @@
     [Parameter] public IList<string> Formats { get; set; } = new List<string>();
     [Parameter] public bool InColumn { get; set; }
 
+    [Parameter]
+    public Settings Set { get; set; } = new Settings();
+
     protected static class Tooltips
     {
         public static string N = "Optional (Defaults to 1). The number of images to generate. Must be between 1 and 10.";
@@ -51,4 +66,11 @@
         public static string ResponseFormat = "Optional (Defaults to url). The format in which the generated images are returned. Must be one of url or b64_json.";
         public static string User = "Optional. A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.";
     }
+    protected override async Task OnInitializedAsync()
+    {
+        var key = await localStorage.GetItemAsStringAsync("keyvalue");
+        if (key != null)
+            Set.ApiKey = AesEncryption.Decrypt(key);
+    }
+
 }

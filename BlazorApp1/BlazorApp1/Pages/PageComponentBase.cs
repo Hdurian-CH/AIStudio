@@ -26,6 +26,7 @@ public abstract class PageComponentBase : ComponentBase
         {
             await JsRuntime.InvokeVoidAsync("addTooltips");
         }
+        
     }
 
     protected async Task<byte[]> GetFileBytes(InputFileChangeEventArgs e)

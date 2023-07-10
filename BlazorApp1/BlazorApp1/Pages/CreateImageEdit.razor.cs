@@ -1,4 +1,6 @@
-﻿using Cledev.OpenAI.V1.Contracts.Images;
+﻿using Cledev.OpenAI;
+using Cledev.OpenAI.V1;
+using Cledev.OpenAI.V1.Contracts.Images;
 using Cledev.OpenAI.V1.Helpers;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -7,7 +9,7 @@ namespace BlazorApp1;
 public class CreateImageEditPage : ImagePageBase
 {
     protected CreateImageEditRequest Request { get; set; } = null!;
-
+    protected Settings Settings { get; set; } = new Settings();
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -37,6 +39,10 @@ public class CreateImageEditPage : ImagePageBase
 
     protected async Task OnSubmitAsync()
     {
+        if (Settings.ApiKey != null)
+        {
+            OpenAIClient = new OpenAIClient(Settings);
+        }
         IsProcessing = true;
 
         Response = null;

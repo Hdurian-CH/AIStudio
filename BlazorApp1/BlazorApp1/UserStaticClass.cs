@@ -13,7 +13,7 @@ namespace BlazorApp1
         public static string HashPassword(string password)
         {
             using var sha256 = SHA256.Create();
-            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password + "HzMLt-cHitWP4qMd"));
             return Convert.ToBase64String(hashedBytes);
         }
     }
