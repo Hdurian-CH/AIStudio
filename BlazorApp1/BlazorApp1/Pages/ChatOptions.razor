@@ -4,6 +4,7 @@
 @using Cledev.OpenAI
 @using Cledev.OpenAI.V1
 @inject ILocalStorageService localStorage
+@inject IJSRuntime JsRuntime
 
 @if (Request is not null)
 {
@@ -29,7 +30,9 @@
         <FormLabel InputId="ApiKey" InColumn="@InColumn">ApiKey</FormLabel>
         <div class="col-sm">
             <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control" />
+            <button class="btn btn-sm ms-1" type="button" @onclick="async ()=>await SaveKey(Set.ApiKey)"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
         </div>
+       
     </div>
 
     <div class="row mb-3">
@@ -119,5 +122,16 @@
             Set.ApiKey = AesEncryption.Decrypt(key);
     }
 
+    private async Task SaveKey(string key)
+    {
+        if (key != string.Empty)
+        {
+            await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(key));
+            await  JsRuntime.InvokeVoidAsync("alert", "Save successful");
+        }
+
+        else
+           await JsRuntime.InvokeVoidAsync("alert", "Key is null");
+    }
 
 }

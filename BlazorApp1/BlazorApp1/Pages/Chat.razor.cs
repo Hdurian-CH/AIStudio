@@ -56,6 +56,7 @@ public class ChatPage : PageComponentBase
 
     protected async Task OnSubmitAsync()
     {
+        Console.WriteLine("1");
         if (Settings.ApiKey != string.Empty)
         {
             OpenAIClient = new OpenAIClient(Settings);
@@ -123,18 +124,6 @@ public class ChatPage : PageComponentBase
         JsRuntime.InvokeVoidAsync("scrollToTarget", "top");
     }
 
-    protected async Task SaveKey(string key)
-    {
-        if (key != string.Empty)
-        {
-            await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(key));
-            JsRuntime.InvokeVoidAsync("alert", "Save successful");
-        }
-            
-        else
-            JsRuntime.InvokeVoidAsync("alert", "Key is null");
-    }
-
     private async Task SaveMessage()
     {
         var temp = Messages?.Where(x => x.IsDelete == false).ToList();
@@ -197,11 +186,6 @@ public class ChatPage : PageComponentBase
         await SaveMessage();
         StateHasChanged();
     }
-    public async Task GetHistoryMessage()
-    {
-        await GetMessage();
-    }
-
 
 
     public async Task GetLimit()
