@@ -43,17 +43,17 @@
                     <OptionsButton IsProcessing="IsProcessing"></OptionsButton>
                 </div>
             </div>
-    
+
             @if (Response is not null && Error is null)
             {
                 <CreateImageData Images="Images"></CreateImageData>
             }
-        
+
             <Error Model="Error"></Error>
         </div>
     </div>
 
     <OptionsModal>
-        <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="true" Set="Settings"></CreateImageOptions>
+        <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="true" Set="Set"></CreateImageOptions>
     </OptionsModal>
 </EditForm>

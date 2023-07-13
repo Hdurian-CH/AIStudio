@@ -2,13 +2,14 @@
 @using Cledev.OpenAI
 @using Blazored.LocalStorage
 @inject ILocalStorageService localStorage
-
+@inject IJSRuntime JsRuntime
 @if (Request is not null)
 {
     <div class="row mb-3">
         <FormLabel InputId="ApiKey" InColumn="InColumn">ApiKey</FormLabel>
         <div class="col-sm">
             <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control" />
+            <button class="btn btn-sm ms-1" type="button" @onclick="async ()=>await SaveKey(Set.ApiKey)"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
         </div>
     </div>
 
@@ -55,9 +56,7 @@
     [Parameter] public IList<string> Sizes { get; set; } = new List<string>();
     [Parameter] public IList<string> Formats { get; set; } = new List<string>();
     [Parameter] public bool InColumn { get; set; }
-
-    [Parameter]
-    public Settings Set { get; set; } = new Settings();
+    [Parameter] public Settings Set { get; set; } = new Settings();
 
     protected static class Tooltips
     {
@@ -71,6 +70,18 @@
         var key = await localStorage.GetItemAsStringAsync("keyvalue");
         if (key != null)
             Set.ApiKey = AesEncryption.Decrypt(key);
+    }
+
+    public async Task SaveKey(string key)
+    {
+        if (key != string.Empty)
+        {
+            await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(key));
+            await JsRuntime.InvokeVoidAsync("alert", "Save successful");
+        }
+
+        else
+            await JsRuntime.InvokeVoidAsync("alert", "Key is null");
     }
 
 }

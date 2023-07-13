@@ -1,10 +1,15 @@
 ﻿using Cledev.OpenAI.V1.Contracts.Images;
 using Cledev.OpenAI.V1.Helpers;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorApp1;
 
 public abstract class ImagePageBase : PageComponentBase
 {
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; }
+
     protected CreateImageResponse? Response { get; set; }
 
     public IList<string> Sizes { get; set; } = new List<string>();

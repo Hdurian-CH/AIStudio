@@ -2,18 +2,19 @@
 using Cledev.OpenAI.V1;
 using Cledev.OpenAI.V1.Contracts.Images;
 using Cledev.OpenAI.V1.Helpers;
+using Microsoft.JSInterop;
 
 namespace BlazorApp1;
 
 public class CreateImagePage : ImagePageBase
 {
     protected CreateImageRequest Request { get; set; } = null!;
-    protected Settings Settings { get; set; }
+    protected Settings Set { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Settings = new Settings();
+        Set = new Settings();
         Request = new CreateImageRequest
         {
             Prompt = string.Empty,
@@ -25,9 +26,9 @@ public class CreateImagePage : ImagePageBase
 
     protected async Task OnSubmitAsync()
     {
-        if (Settings.ApiKey != null)
+        if (Set.ApiKey != null)
         {
-            OpenAIClient = new OpenAIClient(Settings);
+            OpenAIClient = new OpenAIClient(Set);
         }
         IsProcessing = true;
 
@@ -50,4 +51,5 @@ public class CreateImagePage : ImagePageBase
     {
         public static string Prompt = "Required. A text description of the desired image(s). The maximum length is 1000 characters.";
     }
+
 }

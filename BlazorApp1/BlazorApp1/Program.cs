@@ -29,6 +29,8 @@ builder.Services.AddOpenAIClient();
 
 builder.Services.AddHttpContextAccessor();
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,5 +52,7 @@ app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+
 
 app.Run();
