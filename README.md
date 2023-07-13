@@ -23,6 +23,13 @@ git clone Blazor App. Cd to appsetting.json and input your api key and option_id
 * fix openai billing usage showing
 * remove default authenorization(you can use attribute, I just not use for default)
 
+### 7/13/2023 update
+
+* Unity Icon
+* Add save key button for /Image page
+* fix some probloms
+* remove authenorization in App.razor
+
 Login：
 ![Login](/Images/Login.png)
 index:
