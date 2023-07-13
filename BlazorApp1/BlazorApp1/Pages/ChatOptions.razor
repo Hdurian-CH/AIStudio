@@ -200,6 +200,7 @@
                 var result = number.ToString();
                 NowUse = result;
             }
+            await JsRuntime.InvokeVoidAsync("alert", $"Max: {MaxUse} , NowUsed: {NowUse}");
         }
         else
         {
@@ -207,7 +208,7 @@
             await Task.CompletedTask;
         }
 
-        await JsRuntime.InvokeVoidAsync("alert", $"Max: {MaxUse} , NowUsed: {NowUse}");
+        
     }
 
 }
