@@ -1,7 +1,7 @@
 # AIStudio
 ## How to use
 
-git clone Blazor App. Cd to appsetting.json and input your api key and option_id.
+git clone Blazor App. Cd to appsetting.json and input your api key
 
 ## Initial
 
@@ -29,6 +29,12 @@ git clone Blazor App. Cd to appsetting.json and input your api key and option_id
 * Add save key button for /Image page
 * fix some probloms
 * remove authenorization in App.razor
+
+### 7/13/2023 update2
+
+* Fix refresh bug (in chatpage or image page,refresh page will get error because of the JavaScript error call in Razor initializeAsync)
+* Fix changing the apikey does not take effect
+* Fully adaptable to mobile devices
 
 Login：
 ![Login](/Images/Login.png)

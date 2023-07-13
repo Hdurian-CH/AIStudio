@@ -17,10 +17,10 @@
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasOptions" aria-labelledby="offcanvasOptionsLabel" style="z-index: 10000;">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasOptionsLabel">Options</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close" @onclick="UpdateClient"></button>
         </div>
         <div class="offcanvas-body">
-            <ChatOptions Request="Request" ChatModels="ChatModels" InColumn="false" Set="Settings"></ChatOptions>
+            <ChatOptions Request="Request" ChatModels="ChatModels" InColumn="false" Set="Settings" Client="OpenAIClient"></ChatOptions>
         </div>
     </div>
 
@@ -36,7 +36,6 @@
                         <div class="col-12">
                             <button class="btn btn-outline-secondary btn-sm ms-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOptions" aria-controls="offcanvasOptions"><i class="fa-solid fa-gear"></i> Options</button>
                             <button class="btn btn-outline-secondary btn-sm ms-1" type="button" @onclick="DeleteAllMessage"><i class="fa-solid fa-comment-slash"></i> DeleteHistory</button>
-                            <button class="btn btn-outline-secondary btn-sm ms-1" type="button" @onclick="GetLimit"><i class="fa-solid fa-wallet"></i> Quota usage</button>
                         </div>
                     </div>
                 </div>

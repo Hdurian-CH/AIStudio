@@ -1,4 +1,5 @@
-﻿using Cledev.OpenAI.V1.Contracts.Images;
+﻿using Cledev.OpenAI;
+using Cledev.OpenAI.V1.Contracts.Images;
 using Cledev.OpenAI.V1.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -11,6 +12,7 @@ public abstract class ImagePageBase : PageComponentBase
     public IJSRuntime JsRuntime { get; set; }
 
     protected CreateImageResponse? Response { get; set; }
+    public Settings Set { get; set; }
 
     public IList<string> Sizes { get; set; } = new List<string>();
     public IList<string> Formats { get; set; } = new List<string>();
@@ -21,7 +23,9 @@ public abstract class ImagePageBase : PageComponentBase
     {
         Sizes = Enum.GetValues(typeof(ImageSize)).Cast<ImageSize>().Select(x => x.ToStringSize()).ToList();
         Formats = Enum.GetValues(typeof(ImageResponseFormat)).Cast<ImageResponseFormat>().Select(x => x.ToStringFormat()).ToList();
+        Set = new Settings();
     }
+
 }
 
 public class Image

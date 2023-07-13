@@ -24,7 +24,7 @@
 <EditForm Model="Request" OnValidSubmit="OnSubmitAsync">
     <div class="row">
         <div class="col-md-3 border-end pe-4 d-none d-md-block">
-            <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="false"></CreateImageOptions>
+            <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="false" Set="Set"></CreateImageOptions>
         </div>
         <div class="col-md-9 col-sm-12 ps-md-4">
             <div class="mb-3">
@@ -63,6 +63,6 @@
     </div>
 
     <OptionsModal>
-        <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="true" Set="Settings"></CreateImageOptions>
+        <CreateImageOptions Request="Request" Sizes="Sizes" Formats="Formats" InColumn="true" Set="Set"></CreateImageOptions>
     </OptionsModal>
 </EditForm>

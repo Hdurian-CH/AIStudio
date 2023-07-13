@@ -49,19 +49,21 @@ public class ChatPage : PageComponentBase
             Messages = new List<ChatCompletionMessage>()
         };
 
-        /*ChatModels = Enum.GetValues(typeof(ChatModel)).Cast<ChatModel>().Select(x => x.ToStringModel()).ToList();*/
-        
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //pre use localStorage key
+        var str = await localStorage.GetItemAsStringAsync("keyvalue");
+        if (str != null)
+        {
+            Settings.ApiKey = AesEncryption.Decrypt(str);
+            UpdateClient();
+        }
+    }
 
     protected async Task OnSubmitAsync()
     {
-        Console.WriteLine("1");
-        if (Settings.ApiKey != string.Empty)
-        {
-            OpenAIClient = new OpenAIClient(Settings);
-        }
-
         IsProcessing = true;
         Request.Messages.Add(new ChatCompletionMessage("user", Prompt ?? string.Empty));
 
@@ -132,6 +134,7 @@ public class ChatPage : PageComponentBase
         await localStorage.SetItemAsStringAsync("Message",json);
     }
 
+
     protected async Task GetMessage()
     {
         var savedMessage = await localStorage.GetItemAsStringAsync("Message");
@@ -149,6 +152,7 @@ public class ChatPage : PageComponentBase
         StateHasChanged();
     }
 
+    //Delete uset massage
     protected async Task DeleteUserMessage(string content)
     {
         if (Messages != null)
@@ -168,6 +172,8 @@ public class ChatPage : PageComponentBase
         StateHasChanged();
     }
 
+
+    //delete ChatGpt Message
     protected async Task DeleteGptMessage(string content)
     {
         if (Messages != null)
@@ -188,67 +194,11 @@ public class ChatPage : PageComponentBase
     }
 
 
-    public async Task GetLimit()
+    //update client setting
+    public void UpdateClient()
     {
-        var apikey = string.Empty;
-        if (Settings.ApiKey != null)
-        {
-            apikey = Settings.ApiKey;
-        }
-        else
-        {
-            apikey = Configuration.GetSection("OpenAI:ApiKey").Value;
-        }
-
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + apikey);
-        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
-        var response = await client.GetAsync("https://api.openai.com/dashboard/billing/subscription");
-        if (response.IsSuccessStatusCode)
-        {
-            var responseBody = await response.Content.ReadAsStringAsync();
-            dynamic jsonResponse = JsonConvert.DeserializeObject(responseBody);
-            MaxUse = jsonResponse.hard_limit_usd;
-        }
-        else
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Error");
-            await Task.CompletedTask;
-        }
-        var today = DateTime.Today;
-        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
-        var lastDayOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
-        var startDate = firstDayOfMonth.ToString("yyyy-M-d");
-        var endDate = lastDayOfMonth.ToString("yyyy-M-d");
-        var response1 =
-            await client.GetAsync(
-                $"https://api.openai.com/dashboard/billing/usage?start_date={startDate}&end_date={endDate}");
-        if (response1.IsSuccessStatusCode)
-        {
-            var responseBody = await response1.Content.ReadAsStringAsync();
-            dynamic jsonResponse = JsonConvert.DeserializeObject(responseBody);
-            NowUse = jsonResponse.total_usage;
-            var dotIndex = NowUse.IndexOf('.');
-            if (dotIndex >= 0 && dotIndex <= NowUse.Length)
-            {
-                var numberString = NowUse[..dotIndex];
-                //to double
-                var number = double.Parse(numberString) / 100;
-                // to string
-                var result = number.ToString();
-                NowUse = result;
-            }
-        }
-        else
-        {
-            await JsRuntime.InvokeVoidAsync("alert", "Error");
-            await Task.CompletedTask;
-        }
-
-        await JsRuntime.InvokeVoidAsync("alert", $"Max: {MaxUse} , NowUsed: {NowUse}");
+        OpenAIClient = new OpenAIClient(Settings);
     }
-
-
 
     public class Message
     {

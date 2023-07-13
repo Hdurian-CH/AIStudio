@@ -56,7 +56,7 @@
     [Parameter] public IList<string> Sizes { get; set; } = new List<string>();
     [Parameter] public IList<string> Formats { get; set; } = new List<string>();
     [Parameter] public bool InColumn { get; set; }
-    [Parameter] public Settings Set { get; set; } = new Settings();
+    [Parameter] public Settings Set { get; set; }
 
     protected static class Tooltips
     {
@@ -67,10 +67,18 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        var key = await localStorage.GetItemAsStringAsync("keyvalue");
-        if (key != null)
-            Set.ApiKey = AesEncryption.Decrypt(key);
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var str = await localStorage.GetItemAsStringAsync("keyvalue");
+        if (str != null)
+        {
+            Set.ApiKey = AesEncryption.Decrypt(str);
+        }
+            
+    }
+
 
     public async Task SaveKey(string key)
     {
@@ -78,6 +86,7 @@
         {
             await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(key));
             await JsRuntime.InvokeVoidAsync("alert", "Save successful");
+            await InvokeAsync(StateHasChanged);
         }
 
         else

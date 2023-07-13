@@ -9,7 +9,7 @@ namespace BlazorApp1;
 public class CreateImageVariationPage : ImagePageBase
 {
     protected CreateImageVariationRequest Request { get; set; } = null!;
-    protected Settings Settings { get; set; } = new Settings();
+    
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -22,8 +22,22 @@ public class CreateImageVariationPage : ImagePageBase
             ResponseFormat = ImageResponseFormat.B64Json.ToStringFormat(),
             N = 1
         };
+        Set = new Settings();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Set.ApiKey != null)
+        {
+            var str = await localStorage.GetItemAsStringAsync("keyvalue");
+            if (str != null)
+            {
+                Set.ApiKey = AesEncryption.Decrypt(str);
+            }
+
+        }
+
+    }
     public async Task OnInputFileForImageChange(InputFileChangeEventArgs e)
     {
         Request.Image = await GetFileBytes(e);
@@ -32,9 +46,9 @@ public class CreateImageVariationPage : ImagePageBase
 
     protected async Task OnSubmitAsync()
     {
-        if (Settings.ApiKey != null)
+        if (Set.ApiKey != null)
         {
-            OpenAIClient = new OpenAIClient(Settings);
+            OpenAIClient = new OpenAIClient(Set);
         }
         IsProcessing = true;
 

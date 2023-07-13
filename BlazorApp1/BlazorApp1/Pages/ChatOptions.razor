@@ -3,6 +3,7 @@
 @using System.Globalization
 @using Cledev.OpenAI
 @using Cledev.OpenAI.V1
+@using Newtonsoft.Json
 @inject ILocalStorageService localStorage
 @inject IJSRuntime JsRuntime
 
@@ -30,7 +31,8 @@
         <FormLabel InputId="ApiKey" InColumn="@InColumn">ApiKey</FormLabel>
         <div class="col-sm">
             <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control" />
-            <button class="btn btn-sm ms-1" type="button" @onclick="async ()=>await SaveKey(Set.ApiKey)"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
+            <button class="btn btn-sm ms-1" type="button" @onclick="async ()=>await SaveKey()"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
+            <button class="btn btn-sm ms-1" type="button" @onclick="GetLimit"><i class="fa-solid fa-wallet"></i> Quota usage</button>
         </div>
        
     </div>
@@ -98,6 +100,8 @@
     [Parameter] public IList<string> ChatModels { get; set; } = new List<string>();
     [Parameter] public bool InColumn { get; set; }
     [Parameter] public Settings Set { get; set; }
+    [Inject] public IConfiguration Configuration { get; set; }
+    [Parameter] public IOpenAIClient Client { get; set; }
 
     protected static class Tooltips
     {
@@ -117,21 +121,93 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var key = await localStorage.GetItemAsStringAsync("keyvalue");
-        if (key != null)
-            Set.ApiKey = AesEncryption.Decrypt(key);
     }
 
-    private async Task SaveKey(string key)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (key != string.Empty)
+        var str = await localStorage.GetItemAsStringAsync("keyvalue");
+        if (str != null)
         {
-            await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(key));
+            Set.ApiKey = AesEncryption.Decrypt(str);
+        }
+    }
+
+
+    private async Task SaveKey()
+    {
+        if (Set.ApiKey != string.Empty)
+        {
+            await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(Set.ApiKey));
+            Console.WriteLine($"{Set.ApiKey}");
             await  JsRuntime.InvokeVoidAsync("alert", "Save successful");
+            await InvokeAsync(StateHasChanged);
         }
 
         else
            await JsRuntime.InvokeVoidAsync("alert", "Key is null");
+    }
+
+
+    public async Task GetLimit()
+    {
+        var MaxUse = "";
+        var NowUse = "";
+        var apikey = await localStorage.GetItemAsStringAsync("keyvalue");
+        if (apikey != null)
+        {
+            apikey = AesEncryption.Decrypt(apikey);
+        }
+        else
+        {
+            apikey = Configuration.GetSection("OpenAI:ApiKey").Value;
+        }
+
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + apikey);
+        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
+        var response = await client.GetAsync("https://api.openai.com/dashboard/billing/subscription");
+        if (response.IsSuccessStatusCode)
+        {
+            var responseBody = await response.Content.ReadAsStringAsync();
+            dynamic jsonResponse = JsonConvert.DeserializeObject(responseBody);
+            MaxUse = jsonResponse.hard_limit_usd;
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Error");
+            await Task.CompletedTask;
+        }
+        var today = DateTime.Today;
+        var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
+        var lastDayOfMonth = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+        var startDate = firstDayOfMonth.ToString("yyyy-M-d");
+        var endDate = lastDayOfMonth.ToString("yyyy-M-d");
+        var response1 =
+            await client.GetAsync(
+                $"https://api.openai.com/dashboard/billing/usage?start_date={startDate}&end_date={endDate}");
+        if (response1.IsSuccessStatusCode)
+        {
+            var responseBody = await response1.Content.ReadAsStringAsync();
+            dynamic jsonResponse = JsonConvert.DeserializeObject(responseBody);
+            NowUse = jsonResponse.total_usage;
+            var dotIndex = NowUse.IndexOf('.');
+            if (dotIndex >= 0 && dotIndex <= NowUse.Length)
+            {
+                var numberString = NowUse[..dotIndex];
+                //to double
+                var number = double.Parse(numberString) / 100;
+                // to string
+                var result = number.ToString();
+                NowUse = result;
+            }
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Error");
+            await Task.CompletedTask;
+        }
+
+        await JsRuntime.InvokeVoidAsync("alert", $"Max: {MaxUse} , NowUsed: {NowUse}");
     }
 
 }

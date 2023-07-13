@@ -9,12 +9,10 @@ namespace BlazorApp1;
 public class CreateImagePage : ImagePageBase
 {
     protected CreateImageRequest Request { get; set; } = null!;
-    protected Settings Set { get; set; }
-
+    
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Set = new Settings();
         Request = new CreateImageRequest
         {
             Prompt = string.Empty,
@@ -22,6 +20,20 @@ public class CreateImagePage : ImagePageBase
             ResponseFormat = ImageResponseFormat.B64Json.ToStringFormat(),
             N = 1
         };
+        Set = new Settings();
+    }
+
+    protected override async  Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Set.ApiKey != null)
+        {
+            var str = await localStorage.GetItemAsStringAsync("keyvalue");
+            if (str != null)
+            {
+                Set.ApiKey = AesEncryption.Decrypt(str);
+            }
+        }
+        
     }
 
     protected async Task OnSubmitAsync()
