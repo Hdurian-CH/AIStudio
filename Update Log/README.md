@@ -32,7 +32,6 @@
 * Fix changing the apikey does not take effect
 * Fully adaptable to mobile devices
 
-* https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
 
 ### 7/14/2023 Update
 
