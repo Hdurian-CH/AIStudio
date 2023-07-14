@@ -9,7 +9,7 @@ namespace BlazorApp1;
 public class CreateImageVariationPage : ImagePageBase
 {
     protected CreateImageVariationRequest Request { get; set; } = null!;
-    
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -30,14 +30,10 @@ public class CreateImageVariationPage : ImagePageBase
         if (Set.ApiKey != null)
         {
             var str = await localStorage.GetItemAsStringAsync("keyvalue");
-            if (str != null)
-            {
-                Set.ApiKey = AesEncryption.Decrypt(str);
-            }
-
+            if (str != null) Set.ApiKey = AesEncryption.Decrypt(str);
         }
-
     }
+
     public async Task OnInputFileForImageChange(InputFileChangeEventArgs e)
     {
         Request.Image = await GetFileBytes(e);
@@ -46,10 +42,7 @@ public class CreateImageVariationPage : ImagePageBase
 
     protected async Task OnSubmitAsync()
     {
-        if (Set.ApiKey != null)
-        {
-            OpenAIClient = new OpenAIClient(Set);
-        }
+        if (Set.ApiKey != null) OpenAIClient = new OpenAIClient(Set);
         IsProcessing = true;
 
         Response = null;
@@ -70,6 +63,7 @@ public class CreateImageVariationPage : ImagePageBase
 
     protected static class Tooltips
     {
-        public static string Image = "Required. The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.";
+        public static string Image =
+            "Required. The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.";
     }
 }

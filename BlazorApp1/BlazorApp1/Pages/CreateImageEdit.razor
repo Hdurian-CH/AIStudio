@@ -1,6 +1,6 @@
 ﻿@page "/create-image-edit"
 
-@inherits BlazorApp1.CreateImageEditPage
+@inherits CreateImageEditPage
 @*@attribute [Authorize(Roles = "User")]*@
 
 <PageTitle>Create Image Edit</PageTitle>
@@ -37,7 +37,7 @@
             </div>
             <div class="mb-3">
                 <FormLabel InputId="Prompt" Tooltip="@Tooltips.Prompt">Prompt</FormLabel>
-                <InputText id="Prompt" @bind-Value="Request.Prompt" MaxBufferSize="@(4*1024)" class="form-control" />
+                <InputText id="Prompt" @bind-Value="Request.Prompt" MaxBufferSize="@(4 * 1024)" class="form-control"/>
             </div>
 
             <div class="row">

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Routing;
 
 namespace Cledev.OpenAI.Studio.Shared;
 
-public partial class MainLayout : LayoutComponentBase
+public class MainLayout : LayoutComponentBase
 {
     [Inject] public NavigationManager NavigationManager { get; set; } = null!;
 
@@ -34,13 +34,8 @@ public partial class MainLayout : LayoutComponentBase
         var pagePath = new Uri(NavigationManager.Uri).AbsolutePath;
 
         if (pagePath == "/fine-tuning")
-        {
             PageInfo = new PageInfo("Fine-Tuning", "fa-solid fa-screwdriver-wrench");
-        }
-        else if (pagePath == "/")
-        {
-            PageInfo = null;
-        }
+        else if (pagePath == "/") PageInfo = null;
 
         StateHasChanged();
     }
@@ -48,12 +43,12 @@ public partial class MainLayout : LayoutComponentBase
 
 public class PageInfo
 {
-    public string HeaderText { get; set; }
-    public string HeaderIcon { get; set; }
-
     public PageInfo(string headerText, string headerIcon)
     {
         HeaderText = headerText;
         HeaderIcon = headerIcon;
     }
+
+    public string HeaderText { get; set; }
+    public string HeaderIcon { get; set; }
 }

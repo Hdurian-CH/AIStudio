@@ -4,23 +4,16 @@ namespace BlazorApp1.Extensions;
 
 public static class ContentExtensions
 {
-    
     private static readonly string OpenTag = @"<pre>";
     private static readonly string CloseTag = @"</pre>";
     private static readonly string Value = @"```";
 
     public static string? FormatCode(this string? content)
     {
-        if (string.IsNullOrEmpty(content))
-        {
-            return content;
-        }
+        if (string.IsNullOrEmpty(content)) return content;
 
         var numberOfValues = Regex.Matches(content, Value).Count;
-        if (numberOfValues <= 0)
-        {
-            return content;
-        }
+        if (numberOfValues <= 0) return content;
 
         for (var i = 0; i < numberOfValues; i++)
         {
@@ -37,10 +30,7 @@ public static class ContentExtensions
 
     public static bool ContainsCode(this string? content)
     {
-        if (string.IsNullOrEmpty(content))
-        {
-            return false;
-        }
+        if (string.IsNullOrEmpty(content)) return false;
 
         var numberOfValues = Regex.Matches(content, Value).Count;
         return numberOfValues > 0;

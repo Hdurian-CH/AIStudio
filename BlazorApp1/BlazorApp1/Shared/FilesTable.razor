@@ -1,6 +1,5 @@
-﻿@using Cledev.OpenAI.V1.Contracts.FineTunes
-@using BlazorApp1.Extensions
-
+﻿@using BlazorApp1.Extensions
+@using Cledev.OpenAI.V1.Contracts.FineTunes
 @if (Files is not null && Files.Any())
 {
     <table class="table">
@@ -32,6 +31,8 @@
 }
 
 @code {
+
     [Parameter]
     public List<FineTuneResponseFile>? Files { get; set; }
+
 }

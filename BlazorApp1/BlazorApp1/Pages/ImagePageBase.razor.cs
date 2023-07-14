@@ -8,8 +8,7 @@ namespace BlazorApp1;
 
 public abstract class ImagePageBase : PageComponentBase
 {
-    [Inject]
-    public IJSRuntime JsRuntime { get; set; }
+    [Inject] public IJSRuntime JsRuntime { get; set; }
 
     protected CreateImageResponse? Response { get; set; }
     public Settings Set { get; set; }
@@ -22,10 +21,10 @@ public abstract class ImagePageBase : PageComponentBase
     protected override void OnInitialized()
     {
         Sizes = Enum.GetValues(typeof(ImageSize)).Cast<ImageSize>().Select(x => x.ToStringSize()).ToList();
-        Formats = Enum.GetValues(typeof(ImageResponseFormat)).Cast<ImageResponseFormat>().Select(x => x.ToStringFormat()).ToList();
+        Formats = Enum.GetValues(typeof(ImageResponseFormat)).Cast<ImageResponseFormat>()
+            .Select(x => x.ToStringFormat()).ToList();
         Set = new Settings();
     }
-
 }
 
 public class Image
@@ -58,7 +57,6 @@ public static class ImagesExtensions
     public static void AddRangeFromResponse(this IList<Image> images, CreateImageResponse response, string imageType)
     {
         foreach (var image in response.Data)
-        {
             if (string.IsNullOrEmpty(image.Url) is false)
             {
                 images.Add(new Image(imageType, image.Url));
@@ -68,7 +66,6 @@ public static class ImagesExtensions
                 var imagePath = image.B64Json.ToImagePath();
                 images.Add(new Image(imageType, imagePath));
             }
-        }
     }
 
     public static string ToImagePath(this byte[] bytes)

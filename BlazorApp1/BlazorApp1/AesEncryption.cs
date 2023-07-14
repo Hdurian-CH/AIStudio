@@ -1,45 +1,45 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace BlazorApp1
+namespace BlazorApp1;
+
+public class AesEncryption
 {
-    public class AesEncryption
+    private static readonly byte[] _key = Encoding.UTF8.GetBytes("0123456789abcdef");
+    private static readonly byte[] _iv = Encoding.UTF8.GetBytes("abcdef0123456789");
+
+    public static string Encrypt(string plainText)
     {
-        private static byte[] _key = Encoding.UTF8.GetBytes("0123456789abcdef"); 
-        private static byte[] _iv = Encoding.UTF8.GetBytes("abcdef0123456789"); 
+        using var aes = Aes.Create();
+        aes.Key = _key;
+        aes.IV = _iv;
 
-        public static string Encrypt(string plainText)
+        var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+        using var ms = new MemoryStream();
+        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
         {
-            using var aes = Aes.Create();
-            aes.Key = _key;
-            aes.IV = _iv;
-
-            var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-            using var ms = new MemoryStream();
-            using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-            {
-                using var sw = new StreamWriter(cs);
-                sw.Write(plainText);
-            }
-
-            var encryptedBytes = ms.ToArray();
-            return Convert.ToBase64String(encryptedBytes);
+            using var sw = new StreamWriter(cs);
+            sw.Write(plainText);
         }
-        public static string Decrypt(string cipherText)
-        {
-            var cipherBytes = Convert.FromBase64String(cipherText);
 
-            using var aes = Aes.Create();
-            aes.Key = _key;
-            aes.IV = _iv;
+        var encryptedBytes = ms.ToArray();
+        return Convert.ToBase64String(encryptedBytes);
+    }
 
-            var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+    public static string Decrypt(string cipherText)
+    {
+        var cipherBytes = Convert.FromBase64String(cipherText);
 
-            using var ms = new MemoryStream(cipherBytes);
-            using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
-            using var sr = new StreamReader(cs);
-            return sr.ReadToEnd();
-        }
+        using var aes = Aes.Create();
+        aes.Key = _key;
+        aes.IV = _iv;
+
+        var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+        using var ms = new MemoryStream(cipherBytes);
+        using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+        using var sr = new StreamReader(cs);
+        return sr.ReadToEnd();
     }
 }

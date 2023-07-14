@@ -1,9 +1,8 @@
 ﻿@using Cledev.OpenAI.V1.Contracts.Chats
-@using Blazored.LocalStorage
-@using System.Globalization
+@using Newtonsoft.Json
 @using Cledev.OpenAI
 @using Cledev.OpenAI.V1
-@using Newtonsoft.Json
+@using Blazored.LocalStorage
 @inject ILocalStorageService localStorage
 @inject IJSRuntime JsRuntime
 
@@ -23,85 +22,95 @@
     <div class="row mb-3">
         <FormLabel InputId="MaxTokens" InColumn="@InColumn" Tooltip="@Tooltips.MaxTokens">Max Tokens</FormLabel>
         <div class="col-sm">
-            <InputNumber id="MaxTokens" @bind-Value="Request.MaxTokens" class="form-control" />
+            <InputNumber id="MaxTokens" @bind-Value="Request.MaxTokens" class="form-control"/>
         </div>
     </div>
 
     <div class="row mb-3">
         <FormLabel InputId="ApiKey" InColumn="@InColumn">ApiKey</FormLabel>
         <div class="col-sm">
-            <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control" />
-            <button class="btn btn-sm ms-1" type="button" @onclick="async ()=>await SaveKey()"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
+            <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control"/>
+            <button class="btn btn-sm ms-1" type="button" @onclick="async () => await SaveKey()"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
             <button class="btn btn-sm ms-1" type="button" @onclick="GetLimit"><i class="fa-solid fa-wallet"></i> Quota usage</button>
         </div>
-       
+
     </div>
 
     <div class="row mb-3">
         <FormLabel InputId="Temperature" InColumn="@InColumn" Tooltip="@Tooltips.Temperature">Temperature</FormLabel>
         <div class="col-sm">
-            <InputNumber id="Temperature" @bind-Value="Request.Temperature" @bind-Value:format="F2" class="form-control" />
+            <InputNumber id="Temperature" @bind-Value="Request.Temperature" @bind-Value:format="F2" class="form-control"/>
         </div>
     </div>
     <div class="row mb-3">
         <FormLabel InputId="TopP" InColumn="@InColumn" Tooltip="@Tooltips.TopP">TopP</FormLabel>
         <div class="col-sm">
-            <InputNumber id="TopP" @bind-Value="Request.TopP" @bind-Value:format="F2" class="form-control" />
+            <InputNumber id="TopP" @bind-Value="Request.TopP" @bind-Value:format="F2" class="form-control"/>
         </div>
     </div>
     <div class="row mb-3">
         <FormLabel InputId="N" InColumn="@InColumn" Tooltip="@Tooltips.N">N</FormLabel>
         <div class="col-sm">
-            <InputNumber id="N" @bind-Value="Request.N" class="form-control" />
+            <InputNumber id="N" @bind-Value="Request.N" class="form-control"/>
         </div>
     </div>
     <div class="row mb-3 align-items-center">
         <FormLabel InputId="Stream" InColumn="@InColumn" Tooltip="@Tooltips.Stream">Stream</FormLabel>
         <div class="col-sm">
-            <InputCheckbox id="Stream" @bind-Value="Request.Stream" class="form-check-input" />
+            <InputCheckbox id="Stream" @bind-Value="Request.Stream" class="form-check-input"/>
         </div>
     </div>
     <div class="row mb-3">
         <FormLabel InputId="Stop" InColumn="@InColumn" Tooltip="@Tooltips.Stop">Stop</FormLabel>
         <div class="col-sm">
-            <InputText id="Stop" @bind-Value="Request.Stop" class="form-control" />
+            <InputText id="Stop" @bind-Value="Request.Stop" class="form-control"/>
         </div>
     </div>
     <div class="row mb-3">
         <FormLabel InputId="PresencePenalty" InColumn="@InColumn" Tooltip="@Tooltips.PresencePenalty">Presence Penalty</FormLabel>
         <div class="col-sm">
-            <InputNumber id="PresencePenalty" @bind-Value="Request.PresencePenalty" @bind-Value:format="F2" class="form-control" />
+            <InputNumber id="PresencePenalty" @bind-Value="Request.PresencePenalty" @bind-Value:format="F2" class="form-control"/>
         </div>
     </div>
     <div class="row mb-3">
         <FormLabel InputId="FrequencyPenalty" InColumn="@InColumn" Tooltip="@Tooltips.FrequencyPenalty">Frequency Penalty</FormLabel>
         <div class="col-sm">
-            <InputNumber id="FrequencyPenalty" @bind-Value="Request.FrequencyPenalty" @bind-Value:format="F2" class="form-control" />
+            <InputNumber id="FrequencyPenalty" @bind-Value="Request.FrequencyPenalty" @bind-Value:format="F2" class="form-control"/>
         </div>
     </div>
     <div class="row mb-3">
         <FormLabel InputId="LogitBias" InColumn="@InColumn" Tooltip="@Tooltips.LogitBias">Logit Bias</FormLabel>
         <div class="col-sm">
-            <InputTextArea id="LogitBias" @bind-Value="Request.LogitBias" class="form-control" />
+            <InputTextArea id="LogitBias" @bind-Value="Request.LogitBias" class="form-control"/>
         </div>
     </div>
     <div class="row mb-3">
         <FormLabel InputId="User" InColumn="@InColumn" Tooltip="@Tooltips.User">User</FormLabel>
         <div class="col-sm">
-            <InputText id="User" @bind-Value="Request.User" class="form-control" />
+            <InputText id="User" @bind-Value="Request.User" class="form-control"/>
         </div>
     </div>
-
-
 }
 
 @code {
-    [Parameter] public CreateChatCompletionRequest? Request { get; set; }
-    [Parameter] public IList<string> ChatModels { get; set; } = new List<string>();
-    [Parameter] public bool InColumn { get; set; }
-    [Parameter] public Settings Set { get; set; }
-    [Inject] public IConfiguration Configuration { get; set; }
-    [Parameter] public IOpenAIClient Client { get; set; }
+
+    [Parameter]
+    public CreateChatCompletionRequest? Request { get; set; }
+
+    [Parameter]
+    public IList<string> ChatModels { get; set; } = new List<string>();
+
+    [Parameter]
+    public bool InColumn { get; set; }
+
+    [Parameter]
+    public Settings Set { get; set; }
+
+    [Inject]
+    public IConfiguration Configuration { get; set; }
+
+    [Parameter]
+    public IOpenAIClient Client { get; set; }
 
     protected static class Tooltips
     {
@@ -139,12 +148,12 @@
         {
             await localStorage.SetItemAsStringAsync("keyvalue", AesEncryption.Encrypt(Set.ApiKey));
             Console.WriteLine($"{Set.ApiKey}");
-            await  JsRuntime.InvokeVoidAsync("alert", "Save successful");
+            await JsRuntime.InvokeVoidAsync("alert", "Save successful");
             await InvokeAsync(StateHasChanged);
         }
 
         else
-           await JsRuntime.InvokeVoidAsync("alert", "Key is null");
+            await JsRuntime.InvokeVoidAsync("alert", "Key is null");
     }
 
 
@@ -194,9 +203,9 @@
             if (dotIndex >= 0 && dotIndex <= NowUse.Length)
             {
                 var numberString = NowUse[..dotIndex];
-                //to double
+    //to double
                 var number = double.Parse(numberString) / 100;
-                // to string
+    // to string
                 var result = number.ToString();
                 NowUse = result;
             }
@@ -207,8 +216,6 @@
             await JsRuntime.InvokeVoidAsync("alert", "Error");
             await Task.CompletedTask;
         }
-
-        
     }
 
 }

@@ -1,6 +1,6 @@
 ﻿@page "/chat"
 
-@inherits BlazorApp1.ChatPage
+@inherits ChatPage
 @*@attribute [Authorize(Roles = "User")]*@
 
 <PageTitle>Chat</PageTitle>
@@ -34,8 +34,17 @@
                 <div class="modal-header" style="background-color: #f7f7f7;">
                     <div class="row m-auto">
                         <div class="col-12">
-                            <button class="btn btn-outline-secondary btn-sm ms-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOptions" aria-controls="offcanvasOptions"><i class="fa-solid fa-gear"></i> Options</button>
-                            <button class="btn btn-outline-secondary btn-sm ms-1" type="button" @onclick="DeleteAllMessage"><i class="fa-solid fa-comment-slash"></i> DeleteHistory</button>
+                            @if (IsProcessing)
+                            {
+                                <button class="btn btn-outline-secondary btn-sm ms-1 disabled" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOptions" aria-controls="offcanvasOptions"><i class="fa-solid fa-gear"></i> Options</button>
+                                <button class="btn btn-outline-secondary btn-sm ms-1 disabled" type="button" @onclick="DeleteAllMessage"><i class="fa-solid fa-comment-slash"></i> DeleteHistory</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-secondary btn-sm ms-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOptions" aria-controls="offcanvasOptions"><i class="fa-solid fa-gear"></i> Options</button>
+                                <button class="btn btn-outline-secondary btn-sm ms-1" type="button" @onclick="DeleteAllMessage"><i class="fa-solid fa-comment-slash"></i> DeleteHistory</button>
+                            }
+                            
                         </div>
                     </div>
                 </div>
@@ -64,7 +73,7 @@
                                         </span>
                                     </div>
                                 }
-                                else 
+                                else
                                 {
                                     <div class="d-flex flex-row justify-content-start mb-3">
                                         <span class="fw-bold mt-3">
@@ -98,11 +107,11 @@
                 </div>
                 <div class="modal-footer">
                     <div class="input-group">
-                        <InputText id="Prompt" placeholder="Message" @bind-Value="Prompt" class="form-control"/>
+                        <InputText id="Prompt" placeholder="Give me a question,I will tell you what I know" @bind-Value="Prompt" class="form-control" />
                         @if (IsProcessing)
                         {
-                            <button type="submit" class="btn btn-primary text-nowrap" disabled>
-                                <i class="fa-solid fa-paper-plane"></i>
+                            <button type="submit" class="btn text-nowrap" disabled>
+                                <i class="fa-solid fa-ban"></i>
                             </button>
                         }
                         else

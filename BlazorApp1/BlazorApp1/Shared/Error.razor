@@ -1,5 +1,4 @@
-﻿
-@if (Model is not null)
+﻿@if (Model is not null)
 {
     <div class="row my-4">
         <div class="col">
@@ -8,7 +7,7 @@
                     Error
                 </div>
                 <div class="card-body">
-                    <span class="fw-bold">Type</span>: @Model.Type<br />
+                    <span class="fw-bold">Type</span>: @Model.Type<br/>
                     <span class="fw-bold">Code</span>:
                     @if (Model.Code is not null)
                     {
@@ -18,8 +17,8 @@
                     {
                         <literal>&lt;null&gt;</literal>
                     }
-                    <br />
-                    <span class="fw-bold">Message</span>: <span id="errorMessage">@Model.Message</span><br />
+                    <br/>
+                    <span class="fw-bold">Message</span>: <span id="errorMessage">@Model.Message</span><br/>
                     <span class="fw-bold">Param</span>:
                     @if (Model.Param is not null)
                     {
@@ -36,6 +35,8 @@
 }
 
 @code {
-    [Parameter] 
+
+    [Parameter]
     public Cledev.OpenAI.V1.Contracts.Error? Model { get; set; }
+
 }

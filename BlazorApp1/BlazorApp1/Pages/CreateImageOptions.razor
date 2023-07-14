@@ -8,8 +8,8 @@
     <div class="row mb-3">
         <FormLabel InputId="ApiKey" InColumn="InColumn">ApiKey</FormLabel>
         <div class="col-sm">
-            <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control" />
-            <button class="btn btn-sm ms-1" type="button" @onclick="async ()=>await SaveKey(Set.ApiKey)"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
+            <InputText id="ApiKey" type="password" @bind-Value="Set.ApiKey" class="form-control"/>
+            <button class="btn btn-sm ms-1" type="button" @onclick="async () => await SaveKey(Set.ApiKey)"><i class="fa-solid fa-pen-to-square"></i> Save key</button>
         </div>
     </div>
 
@@ -28,7 +28,7 @@
     <div class="row mb-3">
         <FormLabel InputId="N" InColumn="InColumn" Tooltip="@Tooltips.N">N</FormLabel>
         <div class="col-sm">
-            <InputNumber id="N" @bind-Value="Request.N" class="form-control" />
+            <InputNumber id="N" @bind-Value="Request.N" class="form-control"/>
         </div>
     </div>
 
@@ -46,17 +46,27 @@
     <div class="row">
         <FormLabel InputId="User" InColumn="InColumn" Tooltip="@Tooltips.User">User</FormLabel>
         <div class="col-sm">
-            <InputText id="User" @bind-Value="Request.User" class="form-control" r />
+            <InputText id="User" @bind-Value="Request.User" class="form-control" r/>
         </div>
     </div>
 }
 
 @code {
-    [Parameter] public CreateImageRequestBase? Request { get; set; }
-    [Parameter] public IList<string> Sizes { get; set; } = new List<string>();
-    [Parameter] public IList<string> Formats { get; set; } = new List<string>();
-    [Parameter] public bool InColumn { get; set; }
-    [Parameter] public Settings Set { get; set; }
+
+    [Parameter]
+    public CreateImageRequestBase? Request { get; set; }
+
+    [Parameter]
+    public IList<string> Sizes { get; set; } = new List<string>();
+
+    [Parameter]
+    public IList<string> Formats { get; set; } = new List<string>();
+
+    [Parameter]
+    public bool InColumn { get; set; }
+
+    [Parameter]
+    public Settings Set { get; set; }
 
     protected static class Tooltips
     {
@@ -65,6 +75,7 @@
         public static string ResponseFormat = "Optional (Defaults to url). The format in which the generated images are returned. Must be one of url or b64_json.";
         public static string User = "Optional. A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.";
     }
+
     protected override async Task OnInitializedAsync()
     {
     }
@@ -76,7 +87,6 @@
         {
             Set.ApiKey = AesEncryption.Decrypt(str);
         }
-            
     }
 
 

@@ -1,6 +1,6 @@
 ﻿@page "/create-image-variation"
 
-@inherits BlazorApp1.CreateImageVariationPage
+@inherits CreateImageVariationPage
 @*@attribute [Authorize(Roles = "User")]*@
 
 <PageTitle>Crate Image Variation</PageTitle>
@@ -44,12 +44,12 @@
                     <OptionsButton IsProcessing="IsProcessing"></OptionsButton>
                 </div>
             </div>
-    
+
             @if (Response is not null && Error is null)
             {
                 <CreateImageData Images="Images"></CreateImageData>
             }
-        
+
             <Error Model="Error"></Error>
         </div>
     </div>

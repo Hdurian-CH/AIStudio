@@ -45,15 +45,17 @@
 
 
 <!-- Navbar -->
+
 @code
 {
 
     private CustomAuthenticationStateProvider _customAuthStateProvider;
     private AuthenticationState authState;
+
     protected override async Task OnInitializedAsync()
     {
-         _customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
-         authState = await _customAuthStateProvider.GetAuthenticationStateAsync();
+        _customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+        authState = await _customAuthStateProvider.GetAuthenticationStateAsync();
     }
 
 

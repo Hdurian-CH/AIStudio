@@ -1,17 +1,9 @@
-﻿using System.Globalization;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text.Json;
+﻿using System.Text.Json;
 using BlazorApp1.Extensions;
-using Blazored.LocalStorage;
 using Cledev.OpenAI;
 using Cledev.OpenAI.V1;
 using Cledev.OpenAI.V1.Contracts.Chats;
-using Cledev.OpenAI.V1.Helpers;
-using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Newtonsoft.Json;
-using OneOf.Types;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace BlazorApp1;
 
@@ -28,11 +20,11 @@ public class ChatPage : PageComponentBase
     protected string MaxUse { get; set; } = string.Empty;
 
     protected Settings Settings { get; set; }
-    
+
     protected override void OnInitialized()
     {
         Settings = new Settings();
-        ChatModels = new List<string>()
+        ChatModels = new List<string>
         {
             "gpt-3.5-turbo-0613",
             "gpt-3.5-turbo-16k-0613",
@@ -48,7 +40,6 @@ public class ChatPage : PageComponentBase
             Stream = true,
             Messages = new List<ChatCompletionMessage>()
         };
-
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -68,29 +59,28 @@ public class ChatPage : PageComponentBase
         Request.Messages.Add(new ChatCompletionMessage("user", Prompt ?? string.Empty));
 
         Messages.Add(new Message("User", Prompt ?? string.Empty, 0));
-        Messages.Add(new Message($"{Request.Model}", string.Empty, 0));
-
+        
         Prompt = null;
-
+        var ok = false;
         if (Request.Stream is true)
         {
             var completions = OpenAIClient.CreateChatCompletionAsStream(Request);
-
+            Messages.Add(new Message($"{Request.Model}", "......", 0));
             await foreach (var completion in completions)
             {
+                if (ok is not true)
+                {
+                    Messages.Last().Content = string.Empty;
+                    ok = true;
+                }
                 Error = completion.Error;
 
-                if (Error is not null)
-                {
-                    continue;
-                }
+                if (Error is not null) continue;
 
                 Messages.Last().Content += completion.Choices[0].Message?.Content;
 
                 if (Messages.Last().Content.ContainsCode())
-                {
                     Messages.Last().Content = Messages.Last().Content.FormatCode()!;
-                }
 
                 await InvokeAsync(StateHasChanged);
 
@@ -117,6 +107,7 @@ public class ChatPage : PageComponentBase
         }
 
         IsProcessing = false;
+        await InvokeAsync(StateHasChanged);
     }
 
     protected void Reset()
@@ -131,7 +122,7 @@ public class ChatPage : PageComponentBase
         var temp = Messages?.Where(x => x.IsDelete == false).ToList();
         Messages = temp;
         var json = JsonSerializer.Serialize(temp);
-        await localStorage.SetItemAsStringAsync("Message",json);
+        await localStorage.SetItemAsStringAsync("Message", json);
     }
 
 
@@ -139,7 +130,7 @@ public class ChatPage : PageComponentBase
     {
         var savedMessage = await localStorage.GetItemAsStringAsync("Message");
         if (savedMessage != null)
-        { 
+        {
             Console.WriteLine(savedMessage);
             Messages = JsonSerializer.Deserialize<IList<Message>>(savedMessage);
         }
@@ -156,17 +147,13 @@ public class ChatPage : PageComponentBase
     protected async Task DeleteUserMessage(string content)
     {
         if (Messages != null)
-        {
-            for (int i = 0; i < Messages.Count; i++)
-            {
+            for (var i = 0; i < Messages.Count; i++)
                 if (Messages[i].Content == content && Messages[i].Role == "User")
                 {
                     Messages[i].IsDelete = true;
                     Messages[i].IsDelete = true;
                     break;
                 }
-            }
-        }
 
         await SaveMessage();
         StateHasChanged();
@@ -177,17 +164,13 @@ public class ChatPage : PageComponentBase
     protected async Task DeleteGptMessage(string content)
     {
         if (Messages != null)
-        {
-            for (int i = 0; i < Messages.Count; i++)
-            {
+            for (var i = 0; i < Messages.Count; i++)
                 if (Messages[i].Content == content && Messages[i].Role != "User")
                 {
                     Messages[i].IsDelete = true;
                     Messages[i].IsDelete = true;
                     break;
                 }
-            }
-        }
 
         await SaveMessage();
         StateHasChanged();
@@ -208,12 +191,10 @@ public class ChatPage : PageComponentBase
             Content = content;
             Tokens = tokens;
         }
+
         public string Role { get; set; }
         public string Content { get; set; }
         public int Tokens { get; set; }
-        public bool IsDelete { get; set; } = false;
+        public bool IsDelete { get; set; }
     }
-
-
-    
-} 
+}

@@ -1,6 +1,4 @@
 ﻿@using global::BingChat
-
-
 <div class="row mb-3">
     <div class="col-sm">
         <InputSelect id="Model" @bind-Value="@Options.Tone" class="form-select">
@@ -13,16 +11,22 @@
 </div>
 
 
-
 @code {
-    [Parameter] public BingChatClientOptions Options { get; set; }
-    [Parameter] public BingChatClient? Request { get; set; }
-    [Parameter]public BingChatConversation conversation { get; set; }
+
+    [Parameter]
+    public BingChatClientOptions Options { get; set; }
+
+    [Parameter]
+    public BingChatClient? Request { get; set; }
+
+    [Parameter]
+    public BingChatConversation conversation { get; set; }
+
     private IList<string> toneList = new List<string>
     {
         "Balanced",
         "Creative",
-        "Precise",
+        "Precise"
     };
 
     private async void UpdateRequest()

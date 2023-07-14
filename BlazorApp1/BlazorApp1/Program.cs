@@ -1,14 +1,9 @@
 using BlazorApp1;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using BlazorApp1.Data;
-using BlazorApp1.Extensions;
 using Blazored.LocalStorage;
 using Cledev.OpenAI.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.DataProtection;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +12,10 @@ builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile("appsettings.json", true, true);
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>(); 
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
 builder.Services.AddDataProtection()
     .DisableAutomaticKeyGeneration();
@@ -28,7 +23,6 @@ builder.Services.AddDataProtection()
 builder.Services.AddOpenAIClient();
 
 builder.Services.AddHttpContextAccessor();
-
 
 
 var app = builder.Build();
@@ -52,7 +46,6 @@ app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-
 
 
 app.Run();

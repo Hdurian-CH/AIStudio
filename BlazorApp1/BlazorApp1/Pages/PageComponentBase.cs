@@ -1,5 +1,4 @@
-﻿using BlazorApp1;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using Cledev.OpenAI.V1;
 using Cledev.OpenAI.V1.Contracts;
 using Microsoft.AspNetCore.Components;
@@ -22,11 +21,7 @@ public abstract class PageComponentBase : ComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await JsRuntime.InvokeVoidAsync("addTooltips");
-        }
-        
+        if (firstRender) await JsRuntime.InvokeVoidAsync("addTooltips");
     }
 
     protected async Task<byte[]> GetFileBytes(InputFileChangeEventArgs e)
@@ -35,7 +30,7 @@ public abstract class PageComponentBase : ComponentBase
 
         try
         {
-            await e.File.OpenReadStream(maxAllowedSize: 4000000).CopyToAsync(memoryStream);
+            await e.File.OpenReadStream(4000000).CopyToAsync(memoryStream);
         }
         catch (Exception exception)
         {

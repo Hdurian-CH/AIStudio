@@ -10,14 +10,25 @@
             </p>
         </div>
         <div class="card-footer text-end">
-            <a class="text-decoration-none" href="@Link"><i class="fa-solid fa-arrow-right"></i></a>
+            <a class="text-decoration-none" href="@Link">
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Description { get; set; }
-    [Parameter] public string? Link { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter]
+    public string? Link { get; set; }
+
 }
