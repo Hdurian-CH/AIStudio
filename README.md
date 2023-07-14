@@ -3,7 +3,7 @@
 
 git clone Blazor App. Cd to appsetting.json and input your api key. Well you can input your apikey when you enter the website.
 
-You can see update log in [Update Log](Update Log/README.md)
+You can see update log in [Update Log](./Update Log/README.md)
 
 Login：
 ![Login](/Images/Login.png)
